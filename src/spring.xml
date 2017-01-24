@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+    
+    default-init-method="init" default-destroy-method="dispose"> 
+    <context:annotation-config/> 
+
+	
+	<bean id="pointC" class="org.spring.online.core.test.domain.Point" init-method="initMethod" destroy-method="destroyMethod" >
+	
+		<property name="x" value="2" />
+		<property name="y" value="2" />
+	</bean>
+
+
+	<bean id="pointB" class="org.spring.online.core.test.domain.Point">
+		<property name="x" value="2" />
+		<property name="y" value="2" />
+	</bean>
+	
+   <!--  <bean id="triangle" class="org.spring.online.core.test.domain.Triangle" autowire="byName" />  -->
+
+	<bean id="triangle" class="org.spring.online.core.test.domain.Triangle" scope="prototype">
+		<property name="pointA" ref="pointA" />
+		<property name="pointB" ref="pointB">
+
+		</property>
+		<property name="pointC">
+			<bean class="org.spring.online.core.test.domain.Point">
+				<property name="x" value="3" />
+				<property name="y" value="4" />
+			</bean>
+		</property>
+	</bean> 
+	<bean id="pointA" class="org.spring.online.core.test.domain.Point" scope="prototype" lazy-init="true">
+		<property name="x" value="0" />
+		<property name="y" value="0" />
+	</bean>
+   
+
+	<bean id="complexObj" class="org.spring.online.core.test.domain.ComplexObject">
+		<property name="adminEmails">
+			<props>
+				<prop key="admin"> admin@abc.com</prop>
+				<prop key="sec"> sec@abc.com</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="childComplexObj" parent="complexObj" class="org.spring.online.core.test.domain.ChildComplexObject">
+		<property name="adminEmails">
+			<props merge="true">
+				<prop key="worker">worker@abc.com</prop>
+				<prop key="manager">manager@abc.com</prop>
+				<prop key="sec"> secs@abc.com</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="event" class="org.spring.online.core.domain.Event"
+		scope="singleton">
+	</bean>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="classpath:jdbc.properties"/>
+	</bean>
+    
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+			destroy-method="close"> -->
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}"/>
+	</bean>
+	
+	<!--  Bean PostProcessor Implementation --> 
+    <bean class = "org.spring.online.core.post.processor.DisplayNameBeanPostProcessor"></bean>
+    <bean class = "org.spring.online.core.post.processor.AnotherBeanPostProcessor"></bean>  
+</beans>
